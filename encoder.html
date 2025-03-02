@@ -3,8 +3,20 @@
 <head>
   <script>
     function encodeLatex() {
-      let latex = new URLSearchParams(window.location.search).get("latex");
-      document.getElementById("output").innerText = encodeURIComponent(latex);
+      let urlParams = new URLSearchParams(window.location.search);
+      let latex = urlParams.get("latex");
+
+      if (latex) {
+        let encodedLatex = encodeURIComponent(latex);
+        document.getElementById("output").innerText = encodedLatex;
+
+        // Enviar el resultado a Thunkable usando window.ReactNativeWebView.postMessage
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(encodedLatex);
+        }
+      } else {
+        document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
+      }
     }
   </script>
 </head>
