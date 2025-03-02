@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    function encodeLatex() {
+      let latex = new URLSearchParams(window.location.search).get("latex");
+      document.getElementById("output").innerText = encodeURIComponent(latex);
+    }
+  </script>
+</head>
+<body onload="encodeLatex()">
+  <p id="output"></p>
+</body>
+</html>
