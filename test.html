@@ -2,22 +2,23 @@
 <html>
 <head>
   <script>
-    function sendDynamicMessage() {
-      let dynamicMessage = "Mensaje dinámico: " + new Date().toLocaleTimeString(); // Mensaje con la hora actual
+    function sendLatexMessage() {
+      let latexExample = "E=mc^2";  // Mensaje dinámico pero fijo
 
       if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(dynamicMessage);
-        console.log("Mensaje dinámico enviado a Thunkable con ReactNativeWebView:", dynamicMessage);
+        window.ReactNativeWebView.postMessage(latexExample);
+        console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", latexExample);
       } else if (window.parent) {
-        window.parent.postMessage(dynamicMessage, "*");
-        console.log("Mensaje dinámico enviado a Thunkable con window.parent.postMessage:", dynamicMessage);
+        window.parent.postMessage(latexExample, "*");
+        console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", latexExample);
       } else {
         console.log("No se pudo enviar el mensaje.");
       }
     }
   </script>
 </head>
-<body onload="sendDynamicMessage()">
-  <h1>Prueba de Mensaje Dinámico</h1>
+<body onload="sendLatexMessage()">
+  <h1>Prueba de LaTeX</h1>
 </body>
 </html>
+
