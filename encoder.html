@@ -6,30 +6,30 @@
       let urlParams = new URLSearchParams(window.location.search);
       let latex = urlParams.get("latex");
 
-      if (latex) {
-        let encodedLatex = encodeURIComponent(latex);
-        document.getElementById("output").innerText = encodedLatex;
-
-        console.log("Encoded LaTeX:", encodedLatex); // Verificar en la consola
-
-        // Enviar mensaje a Thunkable
-        function sendToThunkable() {
-          if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-            window.ReactNativeWebView.postMessage(encodedLatex);
-            console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", encodedLatex);
-          } else if (window.parent) {
-            window.parent.postMessage(encodedLatex, "*");
-            console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", encodedLatex);
-          } else {
-            console.log("No se pudo enviar el mensaje, reintentando...");
-            setTimeout(sendToThunkable, 500);
-          }
-        }
-
-        sendToThunkable();
-      } else {
+      // Si no se encuentra el parámetro, mostrar un error
+      if (!latex) {
         document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
+        console.log("Error: No se encontró el parámetro 'latex'.");
+        return;
       }
+
+      let encodedLatex = encodeURIComponent(latex);
+      document.getElementById("output").innerText = encodedLatex;
+
+      console.log("Encoded LaTeX:", encodedLatex); // Mostrar en la consola para verificar
+
+      // Enviar el mensaje a Thunkable
+      setTimeout(function () {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(encodedLatex);
+          console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", encodedLatex);
+        } else if (window.parent) {
+          window.parent.postMessage(encodedLatex, "*");
+          console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", encodedLatex);
+        } else {
+          console.log("No se pudo enviar el mensaje.");
+        }
+      }, 500); // Se ejecuta 500ms después de cargar la página
     }
   </script>
 </head>
