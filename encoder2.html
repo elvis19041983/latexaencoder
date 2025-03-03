@@ -7,39 +7,32 @@
       let latex = urlParams.get("latex");
 
       if (!latex) {
-        document.getElementById("output").innerText = "❌ Error: No se encontró el parámetro 'latex'.";
+        console.log("❌ Error: No se encontró el parámetro 'latex'.");
         return;
       }
 
-      // Asegurar que los signos + y espacios se codifiquen correctamente
-      let encodedLatex = encodeURIComponent(latex)
-        .replace(/\+/g, "%2B")  // Asegurar que "+" se interprete como más
-        .replace(/%20/g, "+");  // Convertir espacios en "+"
-
+      // Asegurar que los signos + se codifiquen correctamente
+      let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      // Mostrar la URL en la consola para depuración
-      console.log("URL de la imagen:", imgUrl);
+      console.log("✅ URL de la imagen:", imgUrl);
 
-      // Mostrar la URL en pantalla para verificar
-      document.getElementById("output").innerText = "✅ URL generada: " + imgUrl;
+      // Enviar SOLO la URL de la imagen a Thunkable
+      setTimeout(function () {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(imgUrl);
+        } else if (window.parent) {
+          window.parent.postMessage(imgUrl, "*");
+        }
+      }, 500);
 
-      // Asignar la URL al <img>
-      let imgElement = document.getElementById("latexImage");
-      imgElement.src = imgUrl;
-
-      // Manejo de error en caso de que la imagen no cargue
-      imgElement.onerror = function () {
-        document.getElementById("output").innerText = "❌ Error al cargar la imagen.";
-      };
+      // Redirigir directamente a la imagen para mostrarla en el Web Viewer
+      window.location.href = imgUrl;
     }
 
     window.onload = encodeLatex;
   </script>
 </head>
 <body>
-  <h2>Prueba de `encoder2.html`</h2>
-  <p id="output">⌛ Generando imagen...</p>
-  <img id="latexImage" alt="Imagen LaTeX no generada aún" style="border: 1px solid black; max-width: 100%;" />
 </body>
 </html>
