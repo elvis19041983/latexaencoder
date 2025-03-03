@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <script>
@@ -11,41 +11,35 @@
         return;
       }
 
-      // Codificar correctamente el LaTeX
+      // Mostrar el LaTeX recibido
+      document.getElementById("output").innerText = "📩 Recibido: " + latex;
+
+      // Codificar correctamente la ecuación
       let encodedLatex = encodeURIComponent(latex);
 
       // Generar la URL de la imagen con Codecogs
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      // Mostrar la URL generada en pantalla para depuración
-      document.getElementById("output").innerText = "✅ URL de la imagen: " + imgUrl;
+      // Mostrar la URL generada
+      document.getElementById("debug").innerText = "🔗 URL generada: " + imgUrl;
 
-      // Mostrar la imagen en pantalla
+      // Cargar la imagen
       let imgElement = document.getElementById("latexImage");
       imgElement.src = imgUrl;
 
-      // Si hay un error al cargar la imagen, mostrar un mensaje
+      // Si la imagen no se carga, mostrar error
       imgElement.onerror = function() {
         document.getElementById("output").innerText = "❌ Error al cargar la imagen.";
       };
-
-      // Esperar un poco antes de enviar la URL a Thunkable
-      setTimeout(function () {
-        if (window.ReactNativeWebView) {
-          document.getElementById("postMsgStatus").innerText = "📤 Enviando a Thunkable...";
-          window.ReactNativeWebView.postMessage(imgUrl);
-        } else {
-          document.getElementById("postMsgStatus").innerText = "⚠️ `postMessage` no está disponible.";
-        }
-      }, 2000);
     }
 
     window.onload = encodeLatex;
   </script>
 </head>
 <body>
+  <h2>Prueba de Generación de Imagen LaTeX</h2>
   <p id="output">⌛ Esperando mensaje...</p>
-  <p id="postMsgStatus"></p>
-  <img id="latexImage" alt="Cargando imagen..." />
+  <p id="debug"></p>
+  <img id="latexImage" alt="Cargando imagen..." style="border: 1px solid black; max-width: 100%;" />
 </body>
 </html>
