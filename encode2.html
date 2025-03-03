@@ -17,14 +17,19 @@
       // Generar la URL de la imagen con Codecogs
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      // Mostrar la URL generada para depuración
+      // Mostrar la URL generada en pantalla para depuración
       document.getElementById("output").innerText = "✅ URL de la imagen: " + imgUrl;
 
       // Mostrar la imagen en pantalla
       let imgElement = document.getElementById("latexImage");
       imgElement.src = imgUrl;
 
-      // Esperar un poco antes de enviar el mensaje para asegurar que la imagen se cargó
+      // Si hay un error al cargar la imagen, mostrar un mensaje
+      imgElement.onerror = function() {
+        document.getElementById("output").innerText = "❌ Error al cargar la imagen.";
+      };
+
+      // Esperar un poco antes de enviar la URL a Thunkable
       setTimeout(function () {
         if (window.ReactNativeWebView) {
           document.getElementById("postMsgStatus").innerText = "📤 Enviando a Thunkable...";
@@ -32,7 +37,7 @@
         } else {
           document.getElementById("postMsgStatus").innerText = "⚠️ `postMessage` no está disponible.";
         }
-      }, 2000);  // Espera 2 segundos antes de enviar el mensaje
+      }, 2000);
     }
 
     window.onload = encodeLatex;
