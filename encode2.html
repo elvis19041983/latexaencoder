@@ -1,45 +1,13 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <script>
-    function encodeLatex() {
-      let urlParams = new URLSearchParams(window.location.search);
-      let latex = urlParams.get("latex");
-
-      if (!latex) {
-        document.getElementById("output").innerText = "❌ Error: No se encontró el parámetro 'latex'.";
-        return;
-      }
-
-      // Mostrar el LaTeX recibido
-      document.getElementById("output").innerText = "📩 Recibido: " + latex;
-
-      // Codificar correctamente la ecuación
-      let encodedLatex = encodeURIComponent(latex);
-
-      // Generar la URL de la imagen con Codecogs
-      let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
-
-      // Mostrar la URL generada
-      document.getElementById("debug").innerText = "🔗 URL generada: " + imgUrl;
-
-      // Cargar la imagen
-      let imgElement = document.getElementById("latexImage");
-      imgElement.src = imgUrl;
-
-      // Si la imagen no se carga, mostrar error
-      imgElement.onerror = function() {
-        document.getElementById("output").innerText = "❌ Error al cargar la imagen.";
-      };
-    }
-
-    window.onload = encodeLatex;
-  </script>
+  <title>Prueba de Imagen LaTeX</title>
 </head>
 <body>
   <h2>Prueba de Generación de Imagen LaTeX</h2>
-  <p id="output">⌛ Esperando mensaje...</p>
-  <p id="debug"></p>
-  <img id="latexImage" alt="Cargando imagen..." style="border: 1px solid black; max-width: 100%;" />
+  <p>Esta es una imagen generada con Codecogs:</p>
+
+  <img src="https://latex.codecogs.com/png.latex?x^2+2x+1" alt="Ecuación LaTeX" />
+
 </body>
 </html>
