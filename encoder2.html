@@ -11,11 +11,16 @@
         return;
       }
 
-      // Asegurar que los signos + se codifiquen correctamente
+      // Codificar correctamente + y espacios
       let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
+
+      // Generar la URL de la imagen
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
       console.log("✅ URL de la imagen:", imgUrl);
+
+      // Mostrar solo la imagen en el navegador
+      document.body.innerHTML = '<img src="' + imgUrl + '" style="max-width: 100%;" />';
 
       // Enviar SOLO la URL de la imagen a Thunkable
       setTimeout(function () {
@@ -25,9 +30,6 @@
           window.parent.postMessage(imgUrl, "*");
         }
       }, 500);
-
-      // Redirigir directamente a la imagen para mostrarla en el Web Viewer
-      window.location.href = imgUrl;
     }
 
     window.onload = encodeLatex;
