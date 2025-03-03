@@ -6,40 +6,37 @@
       let urlParams = new URLSearchParams(window.location.search);
       let latex = urlParams.get("latex");
 
-      // Si no se encuentra el parámetro, mostrar un error
       if (!latex) {
-        document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
-        console.log("Error: No se encontró el parámetro 'latex'.");
+        document.getElementById("output").innerText = "❌ Error: No se encontró el parámetro 'latex'.";
         return;
       }
 
-      let encodedLatex = encodeURIComponent(latex);
+      // Reemplazar "+" por "%2B" para que no se convierta en espacio
+      let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      // Mostrar la imagen generada en pantalla
+      // Mostrar la URL en la consola para depuración
+      console.log("URL de la imagen:", imgUrl);
+
+      // Mostrar la URL en pantalla para verificar
+      document.getElementById("output").innerText = "✅ URL generada: " + imgUrl;
+
+      // Asignar la URL al <img>
       let imgElement = document.getElementById("latexImage");
       imgElement.src = imgUrl;
 
-      document.getElementById("output").innerText = "✅ Imagen generada con LaTeX:";
-      console.log("URL de la imagen:", imgUrl);
-
-      // Enviar la URL de la imagen a Thunkable
-      setTimeout(function () {
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(imgUrl);
-          console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", imgUrl);
-        } else if (window.parent) {
-          window.parent.postMessage(imgUrl, "*");
-          console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", imgUrl);
-        } else {
-          console.log("No se pudo enviar el mensaje.");
-        }
-      }, 500);
+      // Manejo de error en caso de que la imagen no cargue
+      imgElement.onerror = function () {
+        document.getElementById("output").innerText = "❌ Error al cargar la imagen.";
+      };
     }
+
+    window.onload = encodeLatex;
   </script>
 </head>
-<body onload="encodeLatex()">
-  <p id="output">⌛ Cargando imagen...</p>
-  <img id="latexImage" alt="Imagen LaTeX no generada aún" />
+<body>
+  <h2>Prueba de `encoder2.html`</h2>
+  <p id="output">⌛ Generando imagen...</p>
+  <img id="latexImage" alt="Imagen LaTeX no generada aún" style="border: 1px solid black; max-width: 100%;" />
 </body>
 </html>
