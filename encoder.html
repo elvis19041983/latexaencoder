@@ -8,12 +8,14 @@
 
       if (latex) {
         let encodedLatex = encodeURIComponent(latex);
-        document.getElementById("output").innerText = encodedLatex;
 
-        // Enviar el resultado a Thunkable usando window.ReactNativeWebView.postMessage
+        // Enviar el resultado de vuelta a Thunkable
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(encodedLatex);
         }
+
+        // También mostrarlo en la página para pruebas
+        document.getElementById("output").innerText = encodedLatex;
       } else {
         document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
       }
