@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Prueba de Imagen LaTeX</title>
+  <script>
+    function encodeLatex() {
+      let urlParams = new URLSearchParams(window.location.search);
+      let latex = urlParams.get("latex");
+
+      // Si no se encuentra el parámetro, mostrar un error
+      if (!latex) {
+        document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
+        console.log("Error: No se encontró el parámetro 'latex'.");
+        return;
+      }
+
+      let encodedLatex = encodeURIComponent(latex);
+      let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
+
+      // Mostrar la imagen generada en pantalla
+      let imgElement = document.getElementById("latexImage");
+      imgElement.src = imgUrl;
+
+      document.getElementById("output").innerText = "✅ Imagen generada con LaTeX:";
+      console.log("URL de la imagen:", imgUrl);
+
+      // Enviar la URL de la imagen a Thunkable
+      setTimeout(function () {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(imgUrl);
+          console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", imgUrl);
+        } else if (window.parent) {
+          window.parent.postMessage(imgUrl, "*");
+          console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", imgUrl);
+        } else {
+          console.log("No se pudo enviar el mensaje.");
+        }
+      }, 500);
+    }
+  </script>
 </head>
-<body>
-  <h2>Prueba de Generación de Imagen LaTeX</h2>
-  <p>Esta es una imagen generada con Codecogs:</p>
-
-  <img src="https://latex.codecogs.com/png.latex?x^2+2x+1" alt="Ecuación LaTeX" />
-
+<body onload="encodeLatex()">
+  <p id="output">⌛ Cargando imagen...</p>
+  <img id="latexImage" alt="Imagen LaTeX no generada aún" />
 </body>
 </html>
