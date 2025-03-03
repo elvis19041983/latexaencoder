@@ -10,16 +10,23 @@
         let encodedLatex = encodeURIComponent(latex);
         document.getElementById("output").innerText = encodedLatex;
 
-        // Intentar enviar el mensaje a Thunkable cada 500ms hasta que se reciba
+        console.log("Encoded LaTeX:", encodedLatex); // Verificar en la consola
+
+        // Enviar mensaje a Thunkable
         function sendToThunkable() {
           if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
             window.ReactNativeWebView.postMessage(encodedLatex);
+            console.log("Mensaje enviado a Thunkable con ReactNativeWebView:", encodedLatex);
+          } else if (window.parent) {
+            window.parent.postMessage(encodedLatex, "*");
+            console.log("Mensaje enviado a Thunkable con window.parent.postMessage:", encodedLatex);
           } else {
-            setTimeout(sendToThunkable, 500); // Reintentar en 500ms
+            console.log("No se pudo enviar el mensaje, reintentando...");
+            setTimeout(sendToThunkable, 500);
           }
         }
 
-        sendToThunkable(); // Iniciar el envío de mensajes a Thunkable
+        sendToThunkable();
       } else {
         document.getElementById("output").innerText = "Error: No se encontró el parámetro 'latex'.";
       }
