@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    function sendTestMessage() {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage("¡Hola Thunkable!");
+        console.log("Mensaje enviado con ReactNativeWebView");
+      } else if (window.parent) {
+        window.parent.postMessage("¡Hola Thunkable!", "*");
+        console.log("Mensaje enviado con window.parent.postMessage");
+      } else {
+        console.log("No se pudo enviar el mensaje.");
+      }
+    }
+  </script>
+</head>
+<body onload="sendTestMessage()">
+  <h1>Prueba de Mensaje</h1>
+</body>
+</html>
