@@ -11,16 +11,13 @@
         return;
       }
 
-      // Codificar correctamente + y espacios
+      // Codificar correctamente el signo "+"
       let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
 
       // Generar la URL de la imagen
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
       console.log("✅ URL de la imagen:", imgUrl);
-
-      // Mostrar solo la imagen en el navegador
-      document.body.innerHTML = '<img src="' + imgUrl + '" style="max-width: 100%;" />';
 
       // Enviar SOLO la URL de la imagen a Thunkable
       setTimeout(function () {
