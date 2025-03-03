@@ -11,8 +11,11 @@
         return;
       }
 
-      // Reemplazar "+" por "%2B" para que no se convierta en espacio
-      let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
+      // Asegurar que los signos + y espacios se codifiquen correctamente
+      let encodedLatex = encodeURIComponent(latex)
+        .replace(/\+/g, "%2B")  // Codifica el signo +
+        .replace(/%20/g, "%5C ");  // Asegurar espacios correctos en LaTeX
+
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
       // Mostrar la URL en la consola para depuración
