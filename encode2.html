@@ -2,27 +2,45 @@
 <html>
 <head>
   <script>
-    function receiveMessage(event) {
-      console.log("Mensaje recibido en Web Viewer:", event.data);
-      let latex = event.data;
+    function encodeLatex() {
+      let urlParams = new URLSearchParams(window.location.search);
+      let latex = urlParams.get("latex");
+
+      if (!latex) {
+        document.getElementById("output").innerText = "❌ Error: No se encontró el parámetro 'latex'.";
+        return;
+      }
+
+      // Codificar correctamente el LaTeX
       let encodedLatex = encodeURIComponent(latex);
 
-      // Crear la URL de la imagen con codecogs
+      // Generar la URL de la imagen con Codecogs
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
-      document.getElementById("latexImage").src = imgUrl;
-      
-      // Enviar la URL de la imagen de vuelta a Thunkable
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(imgUrl);
-      }
+
+      // Mostrar la URL generada para depuración
+      document.getElementById("output").innerText = "✅ URL de la imagen: " + imgUrl;
+
+      // Mostrar la imagen en pantalla
+      let imgElement = document.getElementById("latexImage");
+      imgElement.src = imgUrl;
+
+      // Esperar un poco antes de enviar el mensaje para asegurar que la imagen se cargó
+      setTimeout(function () {
+        if (window.ReactNativeWebView) {
+          document.getElementById("postMsgStatus").innerText = "📤 Enviando a Thunkable...";
+          window.ReactNativeWebView.postMessage(imgUrl);
+        } else {
+          document.getElementById("postMsgStatus").innerText = "⚠️ `postMessage` no está disponible.";
+        }
+      }, 2000);  // Espera 2 segundos antes de enviar el mensaje
     }
 
-    // Escuchar mensajes desde Thunkable
-    window.addEventListener("message", receiveMessage, false);
+    window.onload = encodeLatex;
   </script>
 </head>
 <body>
-  <p>Imagen generada:</p>
+  <p id="output">⌛ Esperando mensaje...</p>
+  <p id="postMsgStatus"></p>
   <img id="latexImage" alt="Cargando imagen..." />
 </body>
 </html>
