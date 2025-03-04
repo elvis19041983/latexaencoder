@@ -14,19 +14,19 @@
       // Codificar correctamente el signo "+"
       let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
 
-      // Generar la URL de la imagen (sin dpi, sin fondo blanco, sin texto grande)
+      // Generar la URL de la imagen
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      console.log("✅ URL de la imagen:", imgUrl);
+      console.log("✅ URL de la imagen (esperando antes de enviar):", imgUrl);
 
-      // Enviar SOLO la URL de la imagen a Thunkable
+      // Esperar 1 segundo para asegurar que la imagen está lista antes de enviarla a Thunkable
       setTimeout(function () {
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(imgUrl);
         } else if (window.parent) {
           window.parent.postMessage(imgUrl, "*");
         }
-      }, 500);
+      }, 1000);  // Aumentamos el retardo a 1 segundo (1000ms)
     }
 
     window.onload = encodeLatex;
