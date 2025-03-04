@@ -11,16 +11,13 @@
         return;
       }
 
-      // Agregar dpi y tamaño de imagen para mejorar la calidad y proporción
-      let highResLatex = "\\dpi{300} \\bg_white \\Large " + latex;
-
       // Codificar correctamente el signo "+"
-      let encodedLatex = encodeURIComponent(highResLatex).replace(/\+/g, "%2B");
+      let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
 
-      // Generar la URL de la imagen con un tamaño específico
+      // Generar la URL de la imagen (sin dpi, sin fondo blanco, sin texto grande)
       let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
 
-      console.log("✅ URL de la imagen (alta resolución y tamaño adecuado):", imgUrl);
+      console.log("✅ URL de la imagen:", imgUrl);
 
       // Enviar SOLO la URL de la imagen a Thunkable
       setTimeout(function () {
@@ -38,5 +35,3 @@
 <body>
 </body>
 </html>
-
-
