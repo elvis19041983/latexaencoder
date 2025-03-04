@@ -15,7 +15,7 @@
       let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
 
       // Generar la URL de la imagen ademas antes de png se pone svg. por el formato. Para cambiar el fondo a blanco latex?\bg_white
-      let imgUrl = "https://latex.codecogs.com/png.latex?\bg_white " + encodedLatex;
+      let imgUrl = "https://latex.codecogs.com/svg.png.latex?" + encodedLatex;
 
       console.log("✅ URL de la imagen (esperando antes de enviar):", imgUrl);
 
