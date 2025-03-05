@@ -10,14 +10,14 @@
         body {
             text-align: center;
             background: white;
-            font-size: 30px;
+            font-size: 16px; /* Ajusta el tamaño base */
             padding: 20px;
         }
         .math-container {
-            padding: 20px;
+            padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            font-size: 2em; /* 🔹 Aumenta el tamaño de la ecuación */
+            font-size: 1.2em; /* 🔹 Cambia este valor para reducir el tamaño de las ecuaciones */
             display: inline-block;
             max-width: 100%;
             overflow-x: auto;
@@ -36,25 +36,27 @@
             let equation = urlParams.get("equation");
 
             const mathContainer = document.getElementById("math");
-            mathContainer.innerHTML = ""; // Limpia el contenido anterior
+            mathContainer.innerHTML = ""; // Limpiar el contenedor
 
             if (!equation || equation.trim() === "") {
-                console.warn("No hay ecuación en la URL.");
+                console.warn("⚠ No se recibió una ecuación en la URL.");
                 mathContainer.innerText = "Error: No se recibió una ecuación válida.";
                 return;
             }
 
             try {
-                // 🔹 Decodificar la ecuación y corregir caracteres especiales
-                equation = decodeURIComponent(equation).normalize("NFC");
+                // Decodificar la ecuación y corregir caracteres especiales
+                equation = decodeURIComponent(equation)
+                    .replace(/\+/g, " + ")
+                    .replace(/%5C%5C/g, "\\\\") // Convertir `\\` correctamente
+                    .replace(/%3D/g, "="); // Convertir `=` correctamente
 
-                // 🔹 Reemplazar "+" para evitar que desaparezca
-                equation = equation.replace(/\+/g, " + ");
+                console.log("✅ Ecuación procesada:", equation);
 
-                // 🔹 Renderizar KaTeX
+                // 🔹 Renderizar con KaTeX
                 katex.render(equation, mathContainer, { throwOnError: false, displayMode: true });
             } catch (error) {
-                console.error("Error al renderizar KaTeX:", error);
+                console.error("❌ Error al renderizar KaTeX:", error);
                 mathContainer.innerText = "Error al renderizar ecuación.";
             }
         }
