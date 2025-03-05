@@ -8,11 +8,10 @@
     <!-- Agregar KaTeX -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/auto-render.min.js"></script>
 </head>
 <body>
     <h2>Visor de LaTeX</h2>
-    <p id="equation">Esperando ecuación...</p>
+    <div id="equation"></div>
 
     <script>
         function getParameterByName(name) {
@@ -25,11 +24,8 @@
         if (equationLatex) {
             let equationElement = document.getElementById("equation");
 
-            // Agregar delimitadores $$ para forzar KaTeX a renderizarlo
-            equationElement.innerHTML = `$$ ${equationLatex} $$`;
-
             // Renderizar con KaTeX
-            renderMathInElement(document.body);
+            katex.render(equationLatex, equationElement, { throwOnError: false });
         }
     </script>
 </body>
