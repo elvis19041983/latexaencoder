@@ -24,8 +24,12 @@
 
         if (equationLatex) {
             let equationElement = document.getElementById("equation");
-            equationElement.innerHTML = equationLatex;
-            renderMathInElement(document.body);  // Renderiza con KaTeX
+
+            // Agregar delimitadores $$ para forzar KaTeX a renderizarlo
+            equationElement.innerHTML = `$$ ${equationLatex} $$`;
+
+            // Renderizar con KaTeX
+            renderMathInElement(document.body);
         }
     </script>
 </body>
