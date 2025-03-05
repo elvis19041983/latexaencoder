@@ -52,9 +52,14 @@
                 return;
             }
 
-            // 🔹 Codificar caracteres especiales correctamente para evitar errores
+            // 🔹 Decodificar la ecuación primero
+            latex = decodeURIComponent(latex);
+
+            // 🔹 Reemplazar `+` por `\tex{+}` para que se renderice correctamente
+            latex = latex.replace(/\+/g, "\\tex{+}");
+
+            // 🔹 Codificar la ecuación para la URL
             let encodedLatex = encodeURIComponent(latex)
-                .replace(/\+/g, "%2B")  // Corregir el signo "+"
                 .replace(/=/g, "%3D")   // Corregir "="
                 .replace(/&/g, "%26")   // Corregir "&"
                 .replace(/\{/g, "%7B")  // Corregir "{"
