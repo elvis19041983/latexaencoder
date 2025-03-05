@@ -1,41 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <script>
-    function encodeLatex() {
-      let urlParams = new URLSearchParams(window.location.search);
-      let latex = urlParams.get("latex");
-
-      if (!latex) {
-        console.log("❌ Error: No se encontró el parámetro 'latex'.");
-        return;
-      }
-
-      // 🔹 Codificar caracteres especiales correctamente para evitar errores
-      let encodedLatex = encodeURIComponent(latex)
-        .replace(/\+/g, "%2B")  // Corregir el signo "+"
-        .replace(/=/g, "%3D")   // Corregir "="
-        .replace(/&/g, "%26")   // Corregir "&"
-        .replace(/\{/g, "%7B")  // Corregir "{"
-        .replace(/\}/g, "%7D")  // Corregir "}"
-        .replace(/\\/g, "%5C"); // Corregir "\"
-
-      // 🔹 Generar URL en SVG con fondo blanco
-      let imgUrl = "https://latex.codecogs.com/svg.latex?\\bg_white " + encodedLatex;
-
-      console.log("✅ URL de la imagen generada:", imgUrl);
-
-      // 🔹 Enviar la URL de la imagen a Thunkable
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(imgUrl);
-      } else if (window.parent) {
-        window.parent.postMessage(imgUrl, "*");
-      }
-    }
-
-    window.onload = encodeLatex;
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renderizador LaTeX con Codecogs</title>
+    <style>
+        body {
+            text-align: center;
+            background: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            padding: 20px;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            margin: auto;
+            background: #f9f9f9;
+        }
+        .latex-image {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        .loading {
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
+    <h2>Renderizador LaTeX</h2>
+    <div class="container">
+        <p class="loading" id="loadingMessage">Cargando ecuación...</p>
+        <img id="latexImage" class="latex-image" style="display: none;">
+    </div>
+
+    <script>
+        function encodeLatex() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let latex = urlParams.get("latex");
+
+            if (!latex) {
+                console.log("❌ Error: No se encontró el parámetro 'latex'.");
+                document.getElementById("loadingMessage").innerText = "⚠ No se encontró una ecuación en la URL.";
+                return;
+            }
+
+            // 🔹 Codificar caracteres especiales correctamente para evitar errores
+            let encodedLatex = encodeURIComponent(latex)
+                .replace(/\+/g, "%2B")  // Corregir el signo "+"
+                .replace(/=/g, "%3D")   // Corregir "="
+                .replace(/&/g, "%26")   // Corregir "&"
+                .replace(/\{/g, "%7B")  // Corregir "{"
+                .replace(/\}/g, "%7D")  // Corregir "}"
+                .replace(/\\/g, "%5C"); // Corregir "\"
+
+            // 🔹 Generar URL en SVG con fondo blanco
+            let imgUrl = "https://latex.codecogs.com/svg.latex?\\bg_white " + encodedLatex;
+
+            console.log("✅ URL de la imagen generada:", imgUrl);
+
+            // 🔹 Mostrar la imagen generada en la página
+            let imgElement = document.getElementById("latexImage");
+            let loadingMessage = document.getElementById("loadingMessage");
+
+            imgElement.src = imgUrl;
+            imgElement.style.display = "block";
+            loadingMessage.style.display = "none";
+
+            // 🔹 Enviar la URL de la imagen a Thunkable
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(imgUrl);
+            } else if (window.parent) {
+                window.parent.postMessage(imgUrl, "*");
+            }
+        }
+
+        window.onload = encodeLatex;
+    </script>
 </body>
 </html>
