@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor LaTeX</title>
+    <script type="text/javascript" async 
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+</head>
+<body>
+    <h2>Visor de LaTeX</h2>
+    <p id="equation">Esperando ecuación...</p>
+
+    <script>
+        window.addEventListener("message", function(event) {
+            if (typeof event.data === "string") {
+                document.getElementById("equation").innerHTML = `$$ ${event.data} $$`;
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            }
+        }, false);
+    </script>
+</body>
+</html>
+
+
