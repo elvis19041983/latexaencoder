@@ -52,14 +52,10 @@
                 return;
             }
 
-            // 🔹 Restaurar manualmente el `+` antes de procesar
-            latex = latex.replace(/ /g, "+"); // Espacios convertidos en `+`
-
-            // 🔹 Decodificar la ecuación correctamente
+            // 🔹 Decodificar correctamente la ecuación
             latex = decodeURIComponent(latex);
 
-            // 🔹 Reemplazar `+` por `\textrm{+}` para que LaTeX lo reconozca
-            latex = latex.replace(/\+/g, "\\textrm{+}");
+            // 🔹 NO reemplazamos `+` en este código porque ya viene como `\textrm{+}` desde Thunkable
 
             // 🔹 Codificar la ecuación para la URL
             let encodedLatex = encodeURIComponent(latex)
