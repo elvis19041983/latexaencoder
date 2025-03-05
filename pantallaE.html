@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor LaTeX</title>
-    <script type="text/javascript" async 
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-    </script>
+    <title>Visor LaTeX con KaTeX</title>
+    
+    <!-- Agregar KaTeX -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/auto-render.min.js"></script>
 </head>
 <body>
     <h2>Visor de LaTeX</h2>
     <p id="equation">Esperando ecuación...</p>
 
     <script>
-        window.addEventListener("message", function(event) {
-            console.log("Mensaje recibido:", event.data);  // 👈 Esto nos ayuda a ver si llega el mensaje
-            if (typeof event.data === "string") {
-                document.getElementById("equation").innerHTML = `$$ ${event.data} $$`;
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub"]);
-            }
-        }, false);
+        function getParameterByName(name) {
+            let url = new URL(window.location.href);
+            return decodeURIComponent(url.searchParams.get(name) || "").replace(/\+/g, " ");
+        }
+
+        let equationLatex = getParameterByName("latex");
+
+        if (equationLatex) {
+            let equationElement = document.getElementById("equation");
+            equationElement.innerHTML = equationLatex;
+            renderMathInElement(document.body);  // Renderiza con KaTeX
+        }
     </script>
 </body>
 </html>
