@@ -52,11 +52,14 @@
                 return;
             }
 
-            // 🔹 Decodificar la ecuación primero
+            // 🔹 Restaurar manualmente el `+` antes de procesar
+            latex = latex.replace(/ /g, "+"); // Espacios convertidos en `+`
+
+            // 🔹 Decodificar la ecuación correctamente
             latex = decodeURIComponent(latex);
 
-            // 🔹 Reemplazar `+` por `\tex{+}` para que se renderice correctamente
-            latex = latex.replace(/\+/g, "\\tex{+}");
+            // 🔹 Reemplazar `+` por `\textrm{+}` para que LaTeX lo reconozca
+            latex = latex.replace(/\+/g, "\\textrm{+}");
 
             // 🔹 Codificar la ecuación para la URL
             let encodedLatex = encodeURIComponent(latex)
