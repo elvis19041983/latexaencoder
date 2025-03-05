@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renderizador KaTeX</title>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background: white;
+        }
+        .math-container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 2em; /* 🔹 Aumenta el tamaño de la ecuación */
+            display: inline-block;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <h2>Ejercicio</h2>
+    <p id="math" class="math-container">Cargando ecuación...</p>
+
+    <script>
+        if (!window.katexRendered) {
+            window.katexRendered = true; // 🔹 Evita múltiples renderizados
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let equation = urlParams.get("equation");
+
+            const mathContainer = document.getElementById("math");
+
+            if (mathContainer) {
+                mathContainer.replaceChildren(); // 🔹 Borra contenido antes de renderizar
+            }
+
+            if (!equation || equation.trim() === "") {
+                console.warn("No hay ecuación en la URL.");
+            }
+
+            // 🔹 Decodificar la ecuación y corregir caracteres especiales
+            equation = decodeURIComponent(equation).normalize("NFC");
+
+            try {
+                // 🔹 Reemplazar `+` para evitar que desaparezca
+                equation = equation.replace(/\+/g, " + ");
+
+                // 🔹 Crear div y renderizar la ecuación en KaTeX
+                const katexContainer = document.createElement("div");
+                katexContainer.innerHTML = katex.renderToString(equation, { displayMode: true });
+
+                // 🔹 Agregar al contenedor principal
+                mathContainer.appendChild(katexContainer);
+            } catch (error) {
+                console.error("Error al renderizar KaTeX:", error);
+                mathContainer.innerText = "Error al renderizar ecuación.";
+            }
+        }
+    </script>
+</body>
+</html>
