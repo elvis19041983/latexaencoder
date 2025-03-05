@@ -14,13 +14,12 @@
 
     <script>
         window.addEventListener("message", function(event) {
+            console.log("Mensaje recibido:", event.data);  // 👈 Esto nos ayuda a ver si llega el mensaje
             if (typeof event.data === "string") {
                 document.getElementById("equation").innerHTML = `$$ ${event.data} $$`;
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub"]);
             }
         }, false);
     </script>
 </body>
 </html>
-
-
