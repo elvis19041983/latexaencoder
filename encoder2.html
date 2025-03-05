@@ -11,22 +11,26 @@
         return;
       }
 
-      // Codificar correctamente el signo "+"
-      let encodedLatex = encodeURIComponent(latex).replace(/\+/g, "%2B");
+      // 🔹 Codificar caracteres especiales correctamente para evitar errores
+      let encodedLatex = encodeURIComponent(latex)
+        .replace(/\+/g, "%2B")  // Corregir el signo "+"
+        .replace(/=/g, "%3D")   // Corregir "="
+        .replace(/&/g, "%26")   // Corregir "&"
+        .replace(/\{/g, "%7B")  // Corregir "{"
+        .replace(/\}/g, "%7D")  // Corregir "}"
+        .replace(/\\/g, "%5C"); // Corregir "\"
 
-      // Generar la URL de la imagen ademas antes de png se pone svg. por el formato. Para cambiar el fondo a blanco latex?\bg_white
-      let imgUrl = "https://latex.codecogs.com/png.latex?" + encodedLatex;
+      // 🔹 Generar URL en SVG con fondo blanco
+      let imgUrl = "https://latex.codecogs.com/svg.latex?\\bg_white " + encodedLatex;
 
-      console.log("✅ URL de la imagen (esperando antes de enviar):", imgUrl);
+      console.log("✅ URL de la imagen generada:", imgUrl);
 
-      // Esperar 1 segundo para asegurar que la imagen está lista antes de enviarla a Thunkable
-      setTimeout(function () {
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(imgUrl);
-        } else if (window.parent) {
-          window.parent.postMessage(imgUrl, "*");
-        }
-      }, 1000);  // Aumentamos el retardo a 1 segundo (1000ms)
+      // 🔹 Enviar la URL de la imagen a Thunkable
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(imgUrl);
+      } else if (window.parent) {
+        window.parent.postMessage(imgUrl, "*");
+      }
     }
 
     window.onload = encodeLatex;
