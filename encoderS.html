@@ -7,7 +7,7 @@
   <script>
     MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-      svg: { scale: 2 } // Ajustar el tamaño de la imagen
+      svg: { scale: 3 } // Aumentar la calidad de la imagen
     };
   </script>
   <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -77,17 +77,23 @@
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        canvas.width = container.clientWidth * 2;
-        canvas.height = container.clientHeight * 2;
+        // Aumentar el tamaño del canvas para evitar recortes
+        canvas.width = (container.clientWidth + 40) * 2; // Se suma 40px de margen
+        canvas.height = (container.clientHeight + 20) * 2;
         let ctx = canvas.getContext("2d");
 
-        // Dibujar el contenido de MathJax en el Canvas
+        // Dibujar el contenido de MathJax en el Canvas con margen izquierdo
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.scale(2, 2);
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
-        ctx.fillText(container.innerText, 10, 50);
+
+        // Ajustar el texto con margen izquierdo de 20px para evitar recorte
+        let lines = container.innerText.split("\n");
+        lines.forEach((line, index) => {
+          ctx.fillText(line, 20, 50 + (index * 40)); // Aumentamos margen izquierdo
+        });
 
         // Convertir Canvas en imagen
         img.src = canvas.toDataURL("image/png");
