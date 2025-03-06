@@ -22,23 +22,20 @@
       background-color: white;
       padding: 10px;
       text-align: center;
-      overflow-x: auto; /* 🔹 Permitir desplazamiento horizontal */
     }
     #latexContainer {
       display: inline-block;
       padding: 10px;
       background-color: white;
       border: 1px solid black;
-      text-align: left; /* 🔹 Alinear texto a la izquierda */
-      margin-left: 20px; /* 🔹 Espacio extra a la izquierda */
-      white-space: pre-wrap; /* 🔹 Permitir saltos de línea */
+      text-align: center;
+      font-size: 24px;
     }
     #latexImage {
       display: none;
-      max-width: 100%;
+      max-width: 90vw;
       max-height: 80vh;
       margin-top: 20px;
-      margin-left: 20px; /* 🔹 Espacio extra para evitar recorte */
     }
   </style>
 </head>
@@ -61,8 +58,7 @@
         .replace(/%5B/g, "[")
         .replace(/%5D/g, "]")
         .replace(/%7B/g, "{")
-        .replace(/%7D/g, "}")
-        .replace(/\\\\/g, "\n"); /* 🔹 Convertir doble barra invertida en salto de línea */
+        .replace(/%7D/g, "}");
     }
 
     function renderLatexAsImage() {
@@ -76,7 +72,7 @@
 
       console.log("Ecuación recibida:", latex);
 
-      // 🔹 PRIMERO: Mostrar la ecuación en texto antes de convertirla en imagen
+      // 🔹 Mostrar ecuación en texto antes de convertirla en imagen
       document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
 
       // 🔹 Esperar a que MathJax renderice
@@ -85,8 +81,10 @@
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
+        console.log("✅ Texto renderizado en HTML:", container.innerText);
+
         // 🔹 Ajustar tamaño del canvas dinámicamente
-        canvas.width = (container.scrollWidth + 100) * 2; 
+        canvas.width = (container.scrollWidth + 100) * 2; /* 🔹 Ajustamos el ancho */
         canvas.height = (container.scrollHeight + 50) * 2;
         let ctx = canvas.getContext("2d");
 
@@ -97,24 +95,26 @@
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
 
-        let lines = container.innerText.split("\n"); // 🔹 Dividir por líneas
+        let lines = container.innerText.split("\n");
         lines.forEach((line, index) => {
-          ctx.fillText(line, 40, 50 + (index * 40)); // 🔹 Espacio entre líneas
+          ctx.fillText(line, 40, 50 + (index * 40)); // 🔹 Se aumentó margen a 40px
         });
 
         // 🔹 Convertir Canvas en imagen
-        img.src = canvas.toDataURL("image/png");
-        img.style.display = "block"; // Mostrar la imagen
-        container.style.display = "none"; // Ocultar el texto original
+        setTimeout(() => {
+          img.src = canvas.toDataURL("image/png");
+          img.style.display = "block"; // Mostrar la imagen
+          container.style.display = "none"; // Ocultar el texto original
+        }, 500); // 🔹 Agregar un pequeño retraso para asegurar la conversión
 
-        console.log("Imagen generada correctamente.");
+        console.log("✅ Imagen generada correctamente.");
       }).catch(err => {
-        console.error("Error al renderizar MathJax:", err);
+        console.error("❌ Error al renderizar MathJax:", err);
       });
     }
 
     window.onload = function() {
-      setTimeout(renderLatexAsImage, 1500); // 🔹 Esperar para evitar que MathJax se corte
+      setTimeout(renderLatexAsImage, 1500); // 🔹 Asegurar que MathJax renderiza antes de la conversión
     };
   </script>
 
