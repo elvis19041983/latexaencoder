@@ -17,9 +17,9 @@
       text-align: center;
     }
     #latexOutput {
-      max-width: 90vw; /* 🔹 Evita que la ecuación se salga de la pantalla */
-      overflow-x: auto; /* 🔹 Permite desplazamiento horizontal si es necesario */
-      font-size: 2vw; /* 🔹 Hace que el tamaño se adapte al ancho de la pantalla */
+      max-width: 90vw;
+      overflow-x: auto;
+      font-size: 3vw; /* 🔹 Tamaño adaptable al ancho de la pantalla */
       white-space: normal;
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -38,10 +38,11 @@
         return;
       }
 
-      // 🔹 Reemplaza "+" con "%2B" si fue interpretado como un espacio
-      latex = latex.replace(/\+/g, " + ");
+      // 🔹 Corrección de caracteres especiales en LaTeX para URL
+      latex = latex.replace(/\+/g, " + ");  // 🔹 Evita que "+" desaparezca
+      latex = latex.replace(/%5E/g, "^");   // 🔹 Asegura que "^" se interprete bien
 
-      console.log("Ecuación recibida:", latex); // 🛠️ Debug en la consola
+      console.log("Ecuación recibida:", latex); // 🛠️ Depuración en la consola
 
       // 🔹 Renderiza KaTeX con manejo de errores
       try {
@@ -50,7 +51,7 @@
         sendMessageToThunkable("Ecuación renderizada correctamente");
       } catch (error) {
         console.error("Error al renderizar KaTeX:", error);
-        document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación";
+        document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación, revisa la sintaxis.";
         sendMessageToThunkable("Error al renderizar LaTeX");
       }
     }
