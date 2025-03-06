@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -14,18 +14,19 @@
       height: 100vh;
       background-color: white;
       font-size: 30px; /* 🔹 Reduce el tamaño del texto */
-      padding: 10px; /* 🔹 Evita que el texto se corte */
+      padding: 10px;  /* 🔹 Evita que el texto se corte */
       overflow-x: auto; /* 🔹 Permite desplazamiento si es necesario */
       text-align: center;
     }
     #latexOutput {
-      max-width: 90vw; /* 🔹 Limita el ancho al 90% del viewport */
+      max-width: 90vw; /* 🔹 Limita el ancho al 90% de la pantalla */
       overflow-x: auto; /* 🔹 Permite desplazamiento si la ecuación es muy larga */
       font-size: 1.5em; /* 🔹 Ajusta el tamaño de la ecuación */
       white-space: normal; /* 🔹 Permite que el texto se divida en varias líneas */
       word-wrap: break-word; /* 🔹 Asegura que el texto largo se ajuste */
       overflow-wrap: break-word;
       text-align: center;
+      color: black; /* 🔹 Asegura que el texto no sea rojo */
     }
   </style>
   <script>
@@ -36,17 +37,20 @@
       // 🔹 Corrección para los "+" en URL
       latex = latex.replace(/\+/g, " + ");
 
-      // Renderizar KaTeX
-      document.getElementById("latexOutput").innerHTML = "";
-      katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
-
-      // 🔹 Envía un mensaje a Thunkable cuando la ecuación se renderiza
-      sendMessageToThunkable();
+      // 🔹 Renderizar KaTeX con manejo de errores
+      try {
+        document.getElementById("latexOutput").innerHTML = "";
+        katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+        sendMessageToThunkable("Ecuación renderizada correctamente");
+      } catch (error) {
+        document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación";
+        sendMessageToThunkable("Error al renderizar LaTeX");
+      }
     }
 
-    function sendMessageToThunkable() {
+    function sendMessageToThunkable(message) {
       if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage("Ecuación renderizada correctamente");
+        window.ReactNativeWebView.postMessage(message);
       }
     }
 
