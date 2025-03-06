@@ -33,6 +33,11 @@
       color: blue;
     }
   </style>
+</head>
+<body>
+  <p id="debugURL"></p>
+  <div id="latexOutput"></div>
+
   <script>
     function decodeLatex(latex) {
       if (!latex) return "";
@@ -41,4 +46,48 @@
       latex = decodeURIComponent(latex);
 
       // 🔹 Correcciones avanzadas
-      latex
+      latex = latex
+        .replace(/\+/g, " + ")     // 🔹 Evita que "+" desaparezca
+        .replace(/%5E/g, "^")      // 🔹 Corrige "^" (exponentes)
+        .replace(/%3D/g, "=")      // 🔹 Corrige "="
+        .replace(/%2B/g, "+")      // 🔹 Corrige "+"
+        .replace(/%5C/g, "\\")     // 🔹 Corrige "\"
+        .replace(/%5C%5C/g, "\\\\")// 🔹 Corrige "\\"
+        .replace(/%5B/g, "[")      // 🔹 Corrige "["
+        .replace(/%5D/g, "]")      // 🔹 Corrige "]"
+        .replace(/%7B/g, "{")      // 🔹 Corrige "{"
+        .replace(/%7D/g, "}");     // 🔹 Corrige "}"
+
+      return latex;
+    }
+
+    function renderLatex() {
+      let urlParams = new URLSearchParams(window.location.search);
+      let latex = decodeLatex(urlParams.get("latex"));
+
+      // 🔍 Mostrar la ecuación antes de renderizarla para depuración
+      console.log("Ecuación recibida:", latex);
+      document.body.insertAdjacentHTML('beforeend', `<p style="color: green;">🔍 Ecuación recibida antes de renderizar: ${latex}</p>`);
+
+      if (!latex) {
+        document.getElementById("latexOutput").innerHTML = "⚠️ No se recibió ninguna ecuación.";
+        return;
+      }
+
+      try {
+        document.getElementById("latexOutput").innerHTML = "";
+
+        // 🔹 Asegurar que KaTeX reciba correctamente la ecuación
+        katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+
+      } catch (error) {
+        console.error("Error al renderizar KaTeX:", error);
+        document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación, revisa la sintaxis.";
+      }
+    }
+
+    window.onload = renderLatex;
+  </script>
+
+</body>
+</html>
