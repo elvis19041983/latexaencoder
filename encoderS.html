@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -13,9 +13,18 @@
       align-items: center;
       height: 100vh;
       background-color: white;
-      font-size: 50px; /* Aumenta el tamaño del texto */
+      font-size: 30px; /* 🔹 Reduce el tamaño del texto */
+      padding: 10px; /* 🔹 Evita que el texto se corte */
+      overflow-x: auto; /* 🔹 Permite desplazamiento si es necesario */
+      text-align: center;
     }
     #latexOutput {
+      max-width: 90vw; /* 🔹 Limita el ancho al 90% del viewport */
+      overflow-x: auto; /* 🔹 Permite desplazamiento si la ecuación es muy larga */
+      font-size: 1.5em; /* 🔹 Ajusta el tamaño de la ecuación */
+      white-space: normal; /* 🔹 Permite que el texto se divida en varias líneas */
+      word-wrap: break-word; /* 🔹 Asegura que el texto largo se ajuste */
+      overflow-wrap: break-word;
       text-align: center;
     }
   </style>
@@ -24,12 +33,21 @@
       let urlParams = new URLSearchParams(window.location.search);
       let latex = urlParams.get("latex") || "E=mc^2";
 
-      // 🔹 Corrección para que los "+" no desaparezcan
+      // 🔹 Corrección para los "+" en URL
       latex = latex.replace(/\+/g, " + ");
 
       // Renderizar KaTeX
       document.getElementById("latexOutput").innerHTML = "";
       katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+
+      // 🔹 Envía un mensaje a Thunkable cuando la ecuación se renderiza
+      sendMessageToThunkable();
+    }
+
+    function sendMessageToThunkable() {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage("Ecuación renderizada correctamente");
+      }
     }
 
     window.onload = renderLatex;
