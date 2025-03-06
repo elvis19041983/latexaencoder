@@ -9,6 +9,7 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -19,18 +20,48 @@
     #latexOutput {
       max-width: 90vw;
       overflow-x: auto;
-      font-size: 3vw; /* 🔹 Tamaño adaptable al ancho de la pantalla */
+      font-size: 3vw;
       white-space: normal;
       word-wrap: break-word;
       overflow-wrap: break-word;
       text-align: center;
       color: black;
+      margin-top: 20px;
+    }
+    #inputLatex {
+      width: 80%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #renderButton {
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-size: 1em;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
   <script>
+    function decodeLatex(latex) {
+      if (!latex) return "";
+      return decodeURIComponent(latex)
+        .replace(/\+/g, " + ")   // 🔹 Corrige "+" interpretado como espacio
+        .replace(/%5E/g, "^")    // 🔹 Corrige "^" para exponentes
+        .replace(/%3D/g, "=")    // 🔹 Corrige "=" para ecuaciones
+        .replace(/%5C/g, "\\");  // 🔹 Corrige "\" para comandos LaTeX
+    }
+
     function renderLatex() {
       let urlParams = new URLSearchParams(window.location.search);
-      let latex = urlParams.get("latex") || "";
+      let latex = decodeLatex(urlParams.get("latex")) || "";
+
+      console.log("Ecuación recibida:", latex); // 🛠️ Depuración en consola
 
       if (!latex) {
         document.getElementById("latexOutput").innerHTML = "⚠️ No se recibió ninguna ecuación.";
@@ -38,13 +69,6 @@
         return;
       }
 
-      // 🔹 Corrección de caracteres especiales en LaTeX para URL
-      latex = latex.replace(/\+/g, " + ");  // 🔹 Evita que "+" desaparezca
-      latex = latex.replace(/%5E/g, "^");   // 🔹 Asegura que "^" se interprete bien
-
-      console.log("Ecuación recibida:", latex); // 🛠️ Depuración en la consola
-
-      // 🔹 Renderiza KaTeX con manejo de errores
       try {
         document.getElementById("latexOutput").innerHTML = "";
         katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
@@ -53,6 +77,18 @@
         console.error("Error al renderizar KaTeX:", error);
         document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación, revisa la sintaxis.";
         sendMessageToThunkable("Error al renderizar LaTeX");
+      }
+    }
+
+    function renderFromInput() {
+      let latex = document.getElementById("inputLatex").value;
+      if (!latex) return;
+      try {
+        document.getElementById("latexOutput").innerHTML = "";
+        katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+      } catch (error) {
+        console.error("Error al renderizar KaTeX:", error);
+        document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación, revisa la sintaxis.";
       }
     }
 
@@ -66,6 +102,9 @@
   </script>
 </head>
 <body>
+  <p id="debugURL" style="font-size: 16px; color: blue;">🔍 URL recibida: <script>document.write(window.location.href);</script></p>
   <div id="latexOutput"></div>
+  <input type="text" id="inputLatex" placeholder="Escribe una ecuación LaTeX aquí">
+  <button id="renderButton" onclick="renderFromInput()">Renderizar</button>
 </body>
 </html>
