@@ -35,4 +35,32 @@
             return decodeURIComponent(latex)
                 .replace(/%3D/g, "=")   // Decodificar "="
                 .replace(/%26/g, "&")   // Decodificar "&"
-                .replace(/%7B/g, "{")   // Deco
+                .replace(/%7B/g, "{")   // Decodificar "{"
+                .replace(/%7D/g, "}")   // Decodificar "}"
+                .replace(/%5C/g, "\\"); // Decodificar "\"
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let equation = urlParams.get("equation");
+
+            const mathContainer = document.getElementById("math");
+
+            if (!equation || equation.trim() === "") {
+                mathContainer.innerText = "No hay ecuación en la URL.";
+                return;
+            }
+
+            // Decodificar la ecuación correctamente
+            equation = decodeLatex(equation).normalize("NFC");
+
+            try {
+                mathContainer.innerHTML = katex.renderToString(equation, { displayMode: true });
+            } catch (error) {
+                console.error("Error al renderizar KaTeX:", error);
+                mathContainer.innerText = "Error al renderizar ecuación.";
+            }
+        };
+    </script>
+</body>
+</html>
