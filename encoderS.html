@@ -13,36 +13,43 @@
       align-items: center;
       height: 100vh;
       background-color: white;
-      font-size: 30px; /* 🔹 Reduce el tamaño del texto */
-      padding: 10px;  /* 🔹 Evita que el texto se corte */
-      overflow-x: auto; /* 🔹 Permite desplazamiento si es necesario */
+      padding: 10px;
       text-align: center;
     }
     #latexOutput {
-      max-width: 90vw; /* 🔹 Limita el ancho al 90% de la pantalla */
-      overflow-x: auto; /* 🔹 Permite desplazamiento si la ecuación es muy larga */
-      font-size: 1.5em; /* 🔹 Ajusta el tamaño de la ecuación */
-      white-space: normal; /* 🔹 Permite que el texto se divida en varias líneas */
-      word-wrap: break-word; /* 🔹 Asegura que el texto largo se ajuste */
+      max-width: 90vw; /* 🔹 Evita que la ecuación se salga de la pantalla */
+      overflow-x: auto; /* 🔹 Permite desplazamiento horizontal si es necesario */
+      font-size: 2vw; /* 🔹 Hace que el tamaño se adapte al ancho de la pantalla */
+      white-space: normal;
+      word-wrap: break-word;
       overflow-wrap: break-word;
       text-align: center;
-      color: black; /* 🔹 Asegura que el texto no sea rojo */
+      color: black;
     }
   </style>
   <script>
     function renderLatex() {
       let urlParams = new URLSearchParams(window.location.search);
-      let latex = urlParams.get("latex") || "E=mc^2";
+      let latex = urlParams.get("latex") || "";
 
-      // 🔹 Corrección para los "+" en URL
+      if (!latex) {
+        document.getElementById("latexOutput").innerHTML = "⚠️ No se recibió ninguna ecuación.";
+        sendMessageToThunkable("No se recibió ninguna ecuación.");
+        return;
+      }
+
+      // 🔹 Reemplaza "+" con "%2B" si fue interpretado como un espacio
       latex = latex.replace(/\+/g, " + ");
 
-      // 🔹 Renderizar KaTeX con manejo de errores
+      console.log("Ecuación recibida:", latex); // 🛠️ Debug en la consola
+
+      // 🔹 Renderiza KaTeX con manejo de errores
       try {
         document.getElementById("latexOutput").innerHTML = "";
         katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
         sendMessageToThunkable("Ecuación renderizada correctamente");
       } catch (error) {
+        console.error("Error al renderizar KaTeX:", error);
         document.getElementById("latexOutput").innerHTML = "⚠️ Error en la ecuación";
         sendMessageToThunkable("Error al renderizar LaTeX");
       }
