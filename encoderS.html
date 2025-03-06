@@ -7,7 +7,7 @@
   <script>
     MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-      svg: { scale: 3 } // Aumentar la calidad de la imagen
+      svg: { scale: 2 }
     };
   </script>
   <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -22,13 +22,15 @@
       margin: 0;
     }
     #latexContainer {
-      visibility: hidden; /* Ocultar el texto y solo mostrar la imagen */
-      position: absolute;
-      white-space: nowrap;
+      font-size: 30px;
+      padding: 10px;
+      text-align: center;
     }
     #latexImage {
-      max-width: 100%;
-      max-height: 90vh;
+      display: none;
+      max-width: 90vw;
+      max-height: 80vh;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -65,28 +67,36 @@
       // Insertar ecuación en el contenedor
       document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
 
-      // Convertir en imagen después de renderizar con MathJax
+      // Renderizar MathJax antes de capturar la imagen
       MathJax.typesetPromise().then(() => {
         let container = document.getElementById("latexContainer");
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        // Ajustar tamaño del canvas según el contenido real
+        // Obtener dimensiones del contenedor
         let rect = container.getBoundingClientRect();
-        canvas.width = rect.width * 3;  // Aumentamos el tamaño para mejor resolución
-        canvas.height = rect.height * 3;
+        canvas.width = rect.width * 2;
+        canvas.height = rect.height * 2;
         let ctx = canvas.getContext("2d");
 
         // Dibujar el contenido de MathJax en el Canvas
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.scale(3, 3);
+        ctx.scale(2, 2);
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
-        ctx.fillText(container.innerText, 10, 50);
+
+        let lines = container.innerText.split("\n");
+        lines.forEach((line, index) => {
+          ctx.fillText(line, 10, 50 + (index * 40));
+        });
 
         // Convertir Canvas en imagen y mostrar
         img.src = canvas.toDataURL("image/png");
+        img.style.display = "block";
+        container.style.display = "none"; // Ocultar el texto original
+      }).catch(err => {
+        console.error("Error al renderizar MathJax:", err);
       });
     }
 
