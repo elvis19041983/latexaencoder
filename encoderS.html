@@ -29,21 +29,17 @@
       padding: 10px;
       background-color: white;
       border: 1px solid black;
-      text-align: left; /* 🔹 Alinear el texto a la izquierda */
-      margin-left: 20px; /* 🔹 Agregar margen para que no se corte */
-      white-space: nowrap; /* 🔹 Evitar que las ecuaciones largas se rompan */
     }
     #latexImage {
-      display: none;
-      max-width: 100%;
+      max-width: 90vw;
       max-height: 80vh;
       margin-top: 20px;
-      margin-left: 20px; /* 🔹 Agregar margen izquierdo a la imagen */
     }
   </style>
 </head>
 <body>
   <h2>Ejercicio</h2>
+  <p id="debugURL"></p>
   <div id="latexContainer"></div>
   <canvas id="latexCanvas"></canvas>
   <img id="latexImage" alt="Ecuación generada" />
@@ -73,48 +69,39 @@
         return;
       }
 
-      console.log("Ecuación recibida:", latex);
-
-      // 🔹 PRIMERO: Mostrar la ecuación en texto antes de convertirla en imagen
+      // Insertar ecuación en el contenedor
       document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
 
-      // 🔹 Esperar a que MathJax renderice
+      // Convertir en imagen después de renderizar con MathJax
       MathJax.typesetPromise().then(() => {
         let container = document.getElementById("latexContainer");
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        // 🔹 Ajustar tamaño del canvas dinámicamente
-        canvas.width = (container.scrollWidth + 100) * 2; /* Aumentamos el ancho */
-        canvas.height = (container.scrollHeight + 50) * 2;
+        // Aumentar el tamaño del canvas para evitar recortes
+        canvas.width = (container.clientWidth + 40) * 2; // Se suma 40px de margen
+        canvas.height = (container.clientHeight + 20) * 2;
         let ctx = canvas.getContext("2d");
 
-        // 🔹 Dibujar el contenido de MathJax en el Canvas
+        // Dibujar el contenido de MathJax en el Canvas con margen izquierdo
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.scale(2, 2);
         ctx.fillStyle = "black";
-        ctx.font = "30px Arial";
+        ctx.font = "20px Arial";
 
+        // Ajustar el texto con margen izquierdo de 20px para evitar recorte
         let lines = container.innerText.split("\n");
         lines.forEach((line, index) => {
-          ctx.fillText(line, 40, 50 + (index * 40)); // 🔹 Se aumentó margen a 40px
+          ctx.fillText(line, 20, 50 + (index * 40)); // Aumentamos margen izquierdo
         });
 
-        // 🔹 Convertir Canvas en imagen
+        // Convertir Canvas en imagen
         img.src = canvas.toDataURL("image/png");
-        img.style.display = "block"; // Mostrar la imagen
-        container.style.display = "none"; // Ocultar el texto original
-
-        console.log("Imagen generada correctamente.");
-      }).catch(err => {
-        console.error("Error al renderizar MathJax:", err);
       });
     }
 
-    window.onload = function() {
-      setTimeout(renderLatexAsImage, 1500); // 🔹 Asegurar que MathJax renderiza antes de la conversión
-    };
+    window.onload = renderLatexAsImage;
   </script>
 
 </body>
