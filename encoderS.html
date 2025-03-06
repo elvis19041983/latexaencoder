@@ -22,19 +22,15 @@
       background-color: white;
       padding: 10px;
       text-align: center;
-      overflow-x: auto; /* 🔹 Agregar desplazamiento horizontal */
     }
     #latexContainer {
       display: inline-block;
       padding: 10px;
       background-color: white;
       border: 1px solid black;
-      text-align: center;
-      overflow-x: auto; /* 🔹 Permitir desplazamiento si es necesario */
     }
     #latexImage {
-      display: block;
-      max-width: 100%;
+      max-width: 90vw;
       max-height: 80vh;
       margin-top: 20px;
     }
@@ -42,6 +38,7 @@
 </head>
 <body>
   <h2>Ejercicio</h2>
+  <p id="debugURL"></p>
   <div id="latexContainer"></div>
   <canvas id="latexCanvas"></canvas>
   <img id="latexImage" alt="Ecuación generada" />
@@ -81,8 +78,8 @@
         let img = document.getElementById("latexImage");
 
         // Aumentar el tamaño del canvas para evitar recortes
-        canvas.width = (container.clientWidth + 100) * 2; // 🔹 Se suma margen extra
-        canvas.height = (container.clientHeight + 50) * 2;
+        canvas.width = (container.clientWidth + 40) * 2; // Se suma 40px de margen
+        canvas.height = (container.clientHeight + 20) * 2;
         let ctx = canvas.getContext("2d");
 
         // Dibujar el contenido de MathJax en el Canvas con margen izquierdo
@@ -92,17 +89,14 @@
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
 
-        // 🔹 Ajustar margen izquierdo para que todo se vea bien
+        // Ajustar el texto con margen izquierdo de 20px para evitar recorte
         let lines = container.innerText.split("\n");
         lines.forEach((line, index) => {
-          ctx.fillText(line, 40, 50 + (index * 40)); // 🔹 Se aumentó margen a 40px
+          ctx.fillText(line, 20, 50 + (index * 40)); // Aumentamos margen izquierdo
         });
 
         // Convertir Canvas en imagen
         img.src = canvas.toDataURL("image/png");
-
-        // 🔹 Ocultar el texto original después de la conversión
-        container.style.display = "none";
       });
     }
 
