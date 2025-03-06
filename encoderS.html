@@ -22,18 +22,15 @@
       background-color: white;
       padding: 10px;
       text-align: center;
-      overflow-x: auto; /* 🔹 Agregar desplazamiento horizontal */
     }
     #latexContainer {
       display: inline-block;
       padding: 10px;
       background-color: white;
       border: 1px solid black;
-      text-align: center;
     }
     #latexImage {
-      display: none;
-      max-width: 100%;
+      max-width: 90vw;
       max-height: 80vh;
       margin-top: 20px;
     }
@@ -41,6 +38,7 @@
 </head>
 <body>
   <h2>Ejercicio</h2>
+  <p id="debugURL"></p>
   <div id="latexContainer"></div>
   <canvas id="latexCanvas"></canvas>
   <img id="latexImage" alt="Ecuación generada" />
@@ -73,36 +71,32 @@
       // Insertar ecuación en el contenedor
       document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
 
-      // Renderizar MathJax antes de capturar la imagen
+      // Convertir en imagen después de renderizar con MathJax
       MathJax.typesetPromise().then(() => {
         let container = document.getElementById("latexContainer");
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        // Ajustar el tamaño del canvas para que la ecuación no se corte
-        canvas.width = container.scrollWidth * 2; 
-        canvas.height = container.scrollHeight * 2;
+        // Aumentar el tamaño del canvas para evitar recortes
+        canvas.width = (container.clientWidth + 40) * 2; // Se suma 40px de margen
+        canvas.height = (container.clientHeight + 20) * 2;
         let ctx = canvas.getContext("2d");
 
-        // Dibujar el contenido de MathJax en el Canvas
+        // Dibujar el contenido de MathJax en el Canvas con margen izquierdo
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.scale(2, 2);
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
 
-        // 🔹 Ajustar margen izquierdo para evitar recorte
+        // Ajustar el texto con margen izquierdo de 20px para evitar recorte
         let lines = container.innerText.split("\n");
         lines.forEach((line, index) => {
-          ctx.fillText(line, 20, 50 + (index * 40)); // 🔹 Se agregó margen izquierdo
+          ctx.fillText(line, 20, 50 + (index * 40)); // Aumentamos margen izquierdo
         });
 
         // Convertir Canvas en imagen
         img.src = canvas.toDataURL("image/png");
-        img.style.display = "block"; // Mostrar la imagen
-        container.style.display = "none"; // Ocultar el texto original
-      }).catch(err => {
-        console.error("Error al renderizar MathJax:", err);
       });
     }
 
