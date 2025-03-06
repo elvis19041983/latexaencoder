@@ -76,7 +76,10 @@
 
       try {
         document.getElementById("latexOutput").innerHTML = "";
-
+// 🔹 Agregar delimitadores manualmente si la ecuación no los tiene
+        if (!latex.startsWith("\\[") && !latex.endsWith("\\]")) {
+            latex = `\\[ ${latex} \\]`;
+        }
         // 🔹 Asegurar que KaTeX reciba correctamente la ecuación
         katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
 
