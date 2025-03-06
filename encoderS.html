@@ -1,19 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css">
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/auto-render.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KaTeX Renderer</title>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: white;
+      font-size: 50px; /* Aumenta el tamaño del texto */
+    }
+    #latexOutput {
+      text-align: center;
+    }
+  </style>
+  <script>
+    function renderLatex() {
+      let urlParams = new URLSearchParams(window.location.search);
+      let latex = urlParams.get("latex") || "E=mc^2";
+
+      // 🔹 Corrección para que los "+" no desaparezcan
+      latex = latex.replace(/\+/g, " + ");
+
+      // Renderizar KaTeX
+      document.getElementById("latexOutput").innerHTML = "";
+      katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+    }
+
+    window.onload = renderLatex;
+  </script>
 </head>
 <body>
-    <h2>Visor de LaTeX</h2>
-    <p id="equation">Esperando ecuación...</p>
-
-    <script>
-        window.addEventListener("message", function(event) {
-            document.getElementById("equation").innerHTML = "$$" + event.data + "$$";
-            renderMathInElement(document.body);
-        }, false);
-    </script>
+  <div id="latexOutput"></div>
 </body>
 </html>
