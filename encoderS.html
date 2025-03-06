@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Renderizar LaTeX en Imagen</title>
+  <title>Ejercicio</title>
   <script>
     MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-      svg: { scale: 2 } // Ajustar el tamaño de la imagen
+      svg: { scale: 3 } // Aumentar la calidad de la imagen
     };
   </script>
   <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -20,24 +20,27 @@
       align-items: center;
       height: 100vh;
       background-color: white;
-      padding: 10px;
-      text-align: center;
+      margin: 0;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
     }
     #latexContainer {
-      display: inline-block;
-      padding: 10px;
-      background-color: white;
-      border: 1px solid black;
+      font-size: 30px;
+      text-align: center;
+      visibility: visible; /* 🔹 Asegurar que el texto aparece antes de la conversión */
     }
     #latexImage {
-      max-width: 90vw;
+      display: none; /* 🔹 Se mostrará solo cuando se genere la imagen */
+      max-width: 100%;
       max-height: 80vh;
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <p id="debugURL"></p> <!-- Mantenemos temporalmente para verificar la ecuación recibida -->
+  <h2>Ejercicio</h2>
   <div id="latexContainer"></div>
   <canvas id="latexCanvas"></canvas>
   <img id="latexImage" alt="Ecuación generada" />
@@ -62,9 +65,6 @@
       let urlParams = new URLSearchParams(window.location.search);
       let latex = decodeLatex(urlParams.get("latex"));
 
-      console.log("Ecuación recibida:", latex);
-      document.getElementById("debugURL").innerText = `Ecuación recibida: ${latex}`;
-
       if (!latex) {
         document.getElementById("latexImage").alt = "⚠️ No se recibió ninguna ecuación.";
         return;
@@ -73,33 +73,42 @@
       // Insertar ecuación en el contenedor
       document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
 
-      // Convertir en imagen después de renderizar con MathJax
+      // Renderizar MathJax antes de capturar la imagen
       MathJax.typesetPromise().then(() => {
         let container = document.getElementById("latexContainer");
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        canvas.width = container.clientWidth * 2;
-        canvas.height = container.clientHeight * 2;
+        // Obtener dimensiones del contenedor
+        let rect = container.getBoundingClientRect();
+        canvas.width = rect.width * 3;
+        canvas.height = rect.height * 3;
         let ctx = canvas.getContext("2d");
 
         // Dibujar el contenido de MathJax en el Canvas
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.scale(2, 2);
+        ctx.scale(3, 3);
         ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.fillText(container.innerText, 10, 50);
+        ctx.font = "30px Arial";
 
-        // Convertir Canvas en imagen
+        let lines = container.innerText.split("\n");
+        lines.forEach((line, index) => {
+          ctx.fillText(line, 10, 50 + (index * 40));
+        });
+
+        // Convertir Canvas en imagen y mostrar
         img.src = canvas.toDataURL("image/png");
-
-        // Ocultar el texto después de convertirlo en imagen
-        container.style.display = "none";
+        img.style.display = "block"; // 🔹 Hacer visible la imagen
+        container.style.display = "none"; // 🔹 Ocultar el texto original
+      }).catch(err => {
+        console.error("Error al renderizar MathJax:", err);
       });
     }
 
-    window.onload = renderLatexAsImage;
+    window.onload = function() {
+      setTimeout(renderLatexAsImage, 1000); // Retraso para asegurar que MathJax renderiza antes de la conversión
+    };
   </script>
 
 </body>
