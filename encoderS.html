@@ -79,12 +79,6 @@
 
         // 🔹 Asegurar que KaTeX reciba correctamente la ecuación
         let formattedLatex = latex.trim();
-
-        // 🔹 Si la ecuación no tiene delimitadores, agregarlos manualmente
-        if (!formattedLatex.startsWith("\\(") && !formattedLatex.startsWith("\\[")) {
-            formattedLatex = `\\[${formattedLatex}\\]`;
-        }
-
         // 🔹 Renderizar en KaTeX
         katex.render(formattedLatex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
 
