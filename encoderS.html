@@ -67,8 +67,8 @@
       let latex = decodeLatex(urlParams.get("latex"));
 
       // 🔍 Mostrar la ecuación antes de renderizarla para depuración
-      console.log("Ecuación recibida:", latex);
-      document.body.insertAdjacentHTML('beforeend', `<p style="color: green;">🔍 Ecuación recibida antes de renderizar: ${latex}</p>`);
+        // console.log("Ecuación recibida:", latex);
+        // document.body.insertAdjacentHTML('beforeend', `<p style="color: green;">🔍 Ecuación recibida antes de renderizar: ${latex}</p>`);
 
       if (!latex) {
         document.getElementById("latexOutput").innerHTML = "⚠️ No se recibió ninguna ecuación.";
