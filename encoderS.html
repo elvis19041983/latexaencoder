@@ -15,30 +15,26 @@
   <style>
     body {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       background-color: white;
       padding: 10px;
       text-align: center;
+      margin: 0;
     }
     #latexContainer {
       display: inline-block;
-      padding: 10px;
       background-color: white;
-      border: 1px solid black;
+      border: none;
     }
     #latexImage {
-      max-width: 90vw;
-      max-height: 80vh;
-      margin-top: 20px;
+      max-width: 100%;
+      max-height: 90vh;
     }
   </style>
 </head>
 <body>
-  <h2>Prueba de Renderizado en Imagen</h2>
-  <p id="debugURL"></p>
   <div id="latexContainer"></div>
   <canvas id="latexCanvas"></canvas>
   <img id="latexImage" alt="Ecuación generada" />
@@ -62,9 +58,6 @@
     function renderLatexAsImage() {
       let urlParams = new URLSearchParams(window.location.search);
       let latex = decodeLatex(urlParams.get("latex"));
-
-      console.log("Ecuación recibida:", latex);
-      document.getElementById("debugURL").innerText = `Ecuación recibida: ${latex}`;
 
       if (!latex) {
         document.getElementById("latexImage").alt = "⚠️ No se recibió ninguna ecuación.";
