@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Renderizar LaTeX en Imagen</title>
+  <title>Ecuación Renderizada</title>
   <script>
     MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-      svg: { scale: 2 } // Ajustar el tamaño de la imagen
+      svg: { scale: 3 } // Aumentar la calidad de la imagen
     };
   </script>
   <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -19,14 +19,12 @@
       align-items: center;
       height: 100vh;
       background-color: white;
-      padding: 10px;
-      text-align: center;
       margin: 0;
     }
     #latexContainer {
-      display: inline-block;
-      background-color: white;
-      border: none;
+      visibility: hidden; /* Ocultar el texto y solo mostrar la imagen */
+      position: absolute;
+      white-space: nowrap;
     }
     #latexImage {
       max-width: 100%;
@@ -73,19 +71,21 @@
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        canvas.width = container.clientWidth * 2;
-        canvas.height = container.clientHeight * 2;
+        // Ajustar tamaño del canvas según el contenido real
+        let rect = container.getBoundingClientRect();
+        canvas.width = rect.width * 3;  // Aumentamos el tamaño para mejor resolución
+        canvas.height = rect.height * 3;
         let ctx = canvas.getContext("2d");
 
         // Dibujar el contenido de MathJax en el Canvas
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.scale(2, 2);
+        ctx.scale(3, 3);
         ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.font = "30px Arial";
         ctx.fillText(container.innerText, 10, 50);
 
-        // Convertir Canvas en imagen
+        // Convertir Canvas en imagen y mostrar
         img.src = canvas.toDataURL("image/png");
       });
     }
