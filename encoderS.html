@@ -29,10 +29,12 @@
     #latexContainer {
       font-size: 30px;
       text-align: center;
-      visibility: visible; /* 🔹 Asegurar que el texto aparece antes de la conversión */
+      visibility: hidden; /* 🔹 Ocultamos el texto después de renderizar */
+      position: absolute;
+      white-space: nowrap;
     }
     #latexImage {
-      display: none; /* 🔹 Se mostrará solo cuando se genere la imagen */
+      display: none;
       max-width: 100%;
       max-height: 80vh;
       margin-top: 20px;
@@ -71,24 +73,25 @@
       }
 
       // Insertar ecuación en el contenedor
-      document.getElementById("latexContainer").innerHTML = `\\[${latex}\\]`;
+      let container = document.getElementById("latexContainer");
+      container.innerHTML = `\\[${latex}\\]`;
+      container.style.visibility = "visible"; // 🔹 Asegurar que MathJax lo renderice correctamente
 
       // Renderizar MathJax antes de capturar la imagen
       MathJax.typesetPromise().then(() => {
-        let container = document.getElementById("latexContainer");
+        let rect = container.getBoundingClientRect();
         let canvas = document.getElementById("latexCanvas");
         let img = document.getElementById("latexImage");
 
-        // Obtener dimensiones del contenedor
-        let rect = container.getBoundingClientRect();
-        canvas.width = rect.width * 3;
-        canvas.height = rect.height * 3;
+        // Ajustar tamaño del canvas dinámicamente
+        canvas.width = rect.width * 2;
+        canvas.height = rect.height * 2;
         let ctx = canvas.getContext("2d");
 
         // Dibujar el contenido de MathJax en el Canvas
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.scale(3, 3);
+        ctx.scale(2, 2);
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
 
