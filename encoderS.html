@@ -63,7 +63,7 @@
       let urlParams = new URLSearchParams(window.location.search);
       let latex = decodeLatex(urlParams.get("latex"));
 
-      console.log("Ecuación recibida:", latex);
+      // console.log("Ecuación recibida:", latex);
       document.getElementById("debugURL").innerText = `Ecuación recibida: ${latex}`;
 
       if (!latex) {
