@@ -56,7 +56,7 @@
         .replace(/%5B/g, "[")      // 🔹 Corrige "["
         .replace(/%5D/g, "]")      // 🔹 Corrige "]"
         .replace(/%7B/g, "{")      // 🔹 Corrige "{"
-        .replace(/%7D/g, "}");     // 🔹 Corrige "}"
+        .replace(/%7D/g, "}");     // 🔹 Corrige "}";
 
       return latex;
     }
@@ -76,12 +76,17 @@
 
       try {
         document.getElementById("latexOutput").innerHTML = "";
-// 🔹 Agregar delimitadores manualmente si la ecuación no los tiene
-        if (!latex.startsWith("\\[") && !latex.endsWith("\\]")) {
-            latex = `\\[ ${latex} \\]`;
-        }
+
         // 🔹 Asegurar que KaTeX reciba correctamente la ecuación
-        katex.render(latex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
+        let formattedLatex = latex.trim();
+
+        // 🔹 Si la ecuación no tiene delimitadores, agregarlos manualmente
+        if (!formattedLatex.startsWith("\\(") && !formattedLatex.startsWith("\\[")) {
+            formattedLatex = `\\[${formattedLatex}\\]`;
+        }
+
+        // 🔹 Renderizar en KaTeX
+        katex.render(formattedLatex, document.getElementById("latexOutput"), { throwOnError: false, displayMode: true });
 
       } catch (error) {
         console.error("Error al renderizar KaTeX:", error);
