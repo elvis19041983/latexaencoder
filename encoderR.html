@@ -56,7 +56,15 @@
             equation = decodeLatex(equation).normalize("NFC");
 
             try {
-                mathContainer.innerHTML = katex.renderToString(equation, { displayMode: true });
+                mathContainer.innerHTML = katex.renderToString(equation, { 
+                     displayMode: true, 
+                throwOnError: false, 
+                fleqn: true,   // Activa alineación izquierda
+                macros: {
+                    "\\begin": "\\begin{array}",  // Asegura que KaTeX interprete 'array'
+                    "\\end": "\\end{array}"
+                }
+                    });
             } catch (error) {
                 console.error("Error al renderizar KaTeX:", error);
                 mathContainer.innerText = "Error al renderizar ecuación.";
